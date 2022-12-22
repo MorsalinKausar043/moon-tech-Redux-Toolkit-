@@ -1,9 +1,14 @@
 import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { addProduct } from "../../features/products/productsSlice";
 
 const AddProduct = () => {
   const { register, handleSubmit } = useForm();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const submit = async (data) => {
     const product = {
@@ -26,8 +31,9 @@ const AddProduct = () => {
       product
     );
     if(result.data._id){
+      dispatch(addProduct(product));
+      navigate("/")
       alert("done!");
-      register({})
     }
   };
 

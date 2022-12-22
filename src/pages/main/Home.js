@@ -10,15 +10,11 @@ const Home = () => {
   const filter = useSelector((state) => state.filter);
   const productData = useSelector((state) => state.products);
   const { stock, brands } = filter;
-  const {products, isLoading, error, errorMassage} = productData;
+  const { products, isLoading, error, errorMassage } = productData;
   //  get api
   useEffect(
-    (_) => async () => {
-      try {
-        dispatch(getProducts());
-      } catch (error) {
-        console.log(error);
-      }
+     () => {
+    dispatch(getProducts());
     },
 
     [dispatch]
@@ -27,11 +23,11 @@ const Home = () => {
   const activeClass = "text-white bg-indigo-500 border-white";
   let content;
 
-  if(isLoading){
-    content = <p>Loading...</p>
+  if (isLoading) {
+    content = <p>Loading...</p>;
   }
-  if(error){
-    content = <p>{errorMassage}</p>
+  if (error) {
+    content = <p>{errorMassage}</p>;
   }
 
   if (products.length) {
@@ -63,7 +59,7 @@ const Home = () => {
         <button
           onClick={() => dispatch(toggle_Stock())}
           className={`border px-3 py-2 rounded-full font-semibold ${
-            brands ? activeClass : null
+            stock ? activeClass : null
           } `}
         >
           In Stock
