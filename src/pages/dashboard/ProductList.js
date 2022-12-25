@@ -1,51 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FiEdit } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
+import { ToastInfo, ToastSuccess, ToastWarning } from "../../components/toast/Toast";
+import {
+  getProducts,
+  removeProduct,
+} from "../../features/products/productsSlice";
 
 const ProductList = () => {
-  const products = [
-    {
-      _id: "1",
-      model: "i3 10100",
-      brand: "INTEL",
-      price: 30000,
-      status: true,
-    },
-    {
-      _id: "2",
-      model: "i5 10400",
-      brand: "INTEL",
-      price: 40000,
-      status: true,
-    },
-    {
-      _id: "3",
-      model: "i3 11200k",
-      brand: "INTEL",
-      price: 50000,
-      status: false,
-    },
-    {
-      _id: "4",
-      model: "Ryzen 5600g",
-      brand: "AMD",
-      price: 30000,
-      status: true,
-    },
-    {
-      _id: "5",
-      model: "Ryzen 3200g",
-      brand: "AMD",
-      price: 25000,
-      status: true,
-    },
-    {
-      _id: "6",
-      model: "Ryzen 4500g",
-      brand: "AMD",
-      price: 50000,
-      status: false,
-    },
-  ];
+  const { products, isLoading, error, errorMassage, deleteSuccess } =
+    useSelector((state) => state.products);
+  const dispatch = useDispatch();
+
+  //  get api
+  useEffect(() => {
+    dispatch(getProducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!isLoading && deleteSuccess) {
+      ToastSuccess("Remove Product!")
+    }
+    if(error){
+      ToastWarning(errorMassage)
+    }
+  }, [isLoading,deleteSuccess, error, errorMassage]);
+
+  // render all statement thing and code
+  if (isLoading) {
+    return <p className="md:ml-8 mt-8">Loading...</p>;
+  }
+  if (error) {
+    return <p className="md:ml-8 mt-8">{errorMassage}</p>;
+  }
 
   return (
     <div class="flex flex-col justify-center items-center h-full w-full select-none">
@@ -69,7 +56,7 @@ const ProductList = () => {
                   <div class="font-semibold text-left">In Stock</div>
                 </th>
                 <th class="p-2">
-                  <div class="font-semibold text-left">Price</div>
+                  <div class="font-semibold text-left">ID</div>
                 </th>
                 <th class="p-2">
                   <div class="font-semibold text-center">Action</div>
@@ -78,12 +65,12 @@ const ProductList = () => {
             </thead>
 
             <tbody class="text-sm divide-y divide-gray-100">
-              {products.map(({ model, brand, price, status, _id }) => (
+              {products.map(({ model, brand, status, _id }) => (
                 <tr>
                   <td
                     class="p-2 flex justify-start"
                     title="Edit"
-                    onClick={(_) => alert("Edit! button Clicked!")}
+                    onClick={(_) => ToastInfo("Edit! button Clicked!")}
                   >
                     <div className="flex justify-center">
                       <FiEdit className="w-9 h-9 cursor-pointer hover:text-blue-600 rounded-full hover:bg-gray-100 p-2" />
@@ -106,13 +93,10 @@ const ProductList = () => {
                   </td>
                   <td class="p-2">
                     <div class="text-left font-medium text-indigo-500">
-                      {price}
+                      {_id}
                     </div>
                   </td>
-                  <td
-                    class="p-2"
-                    onClick={(_) => alert("Delete! button Clicked!")}
-                  >
+                  <td class="p-2" onClick={(_) => dispatch(removeProduct(_id))}>
                     <div class="flex justify-center">
                       <button>
                         <svg
