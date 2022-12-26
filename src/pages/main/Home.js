@@ -1,37 +1,35 @@
-import React, { useEffect } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "../../components/productCard/ProductCard";
 import { toggle_Stock, toggle_Brand } from "../../features/filters/filterSlice";
-import { getProducts } from "../../features/products/productsSlice";
 
 const Home = () => {
   // const [products, setProducts] = useState([]);
   const dispatch = useDispatch();
   const filter = useSelector((state) => state.filter);
-  const productData = useSelector((state) => state.products);
+  const [products , setProducts] = useState([]);
   const { stock, brands } = filter;
-  const { products, isLoading, error, errorMassage } = productData;
   //  get api
-  useEffect(
-     () => {
-    dispatch(getProducts());
-    },
-
-    [dispatch]
-  );
+  useEffect( () => async () =>{
+    const data = await axios.get(
+      "https://moon-tech-backend-production.up.railway.app/products"
+    );
+    setProducts(data.data)
+  } , []);
 
   const activeClass = "text-white bg-indigo-500 border-white";
   let content;
 
-  if (isLoading) {
-    content = <p>Loading...</p>;
-  }
-  if (error) {
-    content = <p>{errorMassage}</p>;
-  }
+  // if (isLoading) {
+  //   content = <p>Loading...</p>;
+  // }
+  // if (error) {
+  //   content = <p>{errorMassage}</p>;
+  // }
 
-  if (products.length) {
-    content = products.map((product, id) => (
+  if (products?.length) {
+    content = products?.map((product, id) => (
       <ProductCard key={id} products={product} />
     ));
   }
