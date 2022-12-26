@@ -9,8 +9,8 @@ switch (process.env.REACT_APP_ENVIRONMENT) {
     URL = "https://moon-tech-backend-production.up.railway.app/";
     break;
   default:
-    // URL = "http://localhost:5000/";
-    URL = "https://moon-tech-backend-production.up.railway.app/";
+    URL = "http://localhost:5000/";
+    // URL = "https://moon-tech-backend-production.up.railway.app/";
     break;
 }
 const Instance = axios.create({
