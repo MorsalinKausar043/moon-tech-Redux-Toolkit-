@@ -1,40 +1,34 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "../../components/productCard/ProductCard";
+import { useGetProductsQuery } from "../../features/api/apiSlice";
 import { toggle_Stock, toggle_Brand } from "../../features/filters/filterSlice";
 
 const Home = () => {
-  // const [products, setProducts] = useState([]);
   const dispatch = useDispatch();
   const filter = useSelector((state) => state.filter);
-  const [products , setProducts] = useState([]);
   const { stock, brands } = filter;
-  //  get api
-  useEffect( () => async () =>{
-    const data = await axios.get(
-      "https://moon-tech-backend-production.up.railway.app/products"
-    );
-    setProducts(data.data)
-  } , []);
+
+  const { data, isError, isLoading, isSuccess } = useGetProductsQuery();
+  const products = data;
 
   const activeClass = "text-white bg-indigo-500 border-white";
   let content;
 
-  // if (isLoading) {
-  //   content = <p>Loading...</p>;
-  // }
-  // if (error) {
-  //   content = <p>{errorMassage}</p>;
-  // }
+  if (isLoading) {
+    content = <p>Loading...</p>;
+  }
+  if (!isSuccess && isError) {
+    content = <p>Obs. Something Else Problem!</p>;
+  }
 
   if (products?.length) {
     content = products?.map((product, id) => (
       <ProductCard key={id} products={product} />
     ));
   }
-
-  if (products.length && (stock || brands.length)) {
+    // conditional button click and work
+  if (products?.length && (stock || brands.length)) {
     content = products
       .filter((product) => {
         if (stock) {
