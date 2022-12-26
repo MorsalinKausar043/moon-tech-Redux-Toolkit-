@@ -1,37 +1,24 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { FiEdit } from "react-icons/fi";
-import { useDispatch, useSelector } from "react-redux";
-import { ToastInfo, ToastSuccess, ToastWarning } from "../../components/toast/Toast";
 import {
-  getProducts,
-  removeProduct,
-} from "../../features/products/productsSlice";
+  ToastInfo,
+} from "../../components/toast/Toast";
+import {
+  useDeleteProductMutation,
+  useGetProductsQuery,
+} from "../../features/api/apiSlice";
 
 const ProductList = () => {
-  const { products, isLoading, error, errorMassage, deleteSuccess } =
-    useSelector((state) => state.products);
-  const dispatch = useDispatch();
-
-  //  get api
-  useEffect(() => {
-    dispatch(getProducts());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (!isLoading && deleteSuccess) {
-      ToastSuccess("Remove Product!")
-    }
-    if(error){
-      ToastWarning(errorMassage)
-    }
-  }, [isLoading,deleteSuccess, error, errorMassage]);
+  const { data, isLoading, isError } = useGetProductsQuery();
+  const [removeProduct, {isSuccess}] = useDeleteProductMutation();
+  const products = data;
 
   // render all statement thing and code
   if (isLoading) {
     return <p className="md:ml-8 mt-8">Loading...</p>;
   }
-  if (error) {
-    return <p className="md:ml-8 mt-8">{errorMassage}</p>;
+  if (isError) {
+    return <p className="md:ml-8 mt-8">Something Error!</p>;
   }
 
   return (
@@ -96,7 +83,7 @@ const ProductList = () => {
                       {_id}
                     </div>
                   </td>
-                  <td class="p-2" onClick={(_) => dispatch(removeProduct(_id))}>
+                  <td class="p-2" onClick={(_) => removeProduct(_id)}>
                     <div class="flex justify-center">
                       <button>
                         <svg

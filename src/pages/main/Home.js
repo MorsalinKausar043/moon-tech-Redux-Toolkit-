@@ -9,8 +9,10 @@ const Home = () => {
   const filter = useSelector((state) => state.filter);
   const { stock, brands } = filter;
 
+  // const { data, isError, isLoading, isSuccess } = useGetProductsQuery(null, {refetchOnMountOrArgChange:true}); // automatic refresh api data and page!
   const { data, isError, isLoading, isSuccess } = useGetProductsQuery();
   const products = data;
+  // const products = data;
 
   const activeClass = "text-white bg-indigo-500 border-white";
   let content;
@@ -27,7 +29,7 @@ const Home = () => {
       <ProductCard key={id} products={product} />
     ));
   }
-    // conditional button click and work
+  // conditional button click and work
   if (products?.length && (stock || brands.length)) {
     content = products
       .filter((product) => {

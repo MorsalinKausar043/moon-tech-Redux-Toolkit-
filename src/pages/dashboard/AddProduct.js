@@ -1,18 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
 import { ToastError, ToastSuccess } from "../../components/toast/Toast";
-import {
-  addProduct,
-  postProductData,
-} from "../../features/products/productsSlice";
+import { usePostProductMutation } from "../../features/api/apiSlice";
 
 const AddProduct = () => {
   const { register, handleSubmit, reset } = useForm();
-  const dispatch = useDispatch();
-  const { postSuccess , error, errorMassage, isLoading } = useSelector(
-    (state) => state.products
-  );
+
+  const [postProduct, { isError, isSuccess, isLoading }] =
+    usePostProductMutation();
 
   const submit = async (data) => {
     const product = {
@@ -29,16 +24,18 @@ const AddProduct = () => {
       spec: [],
     };
     // submit data
-    dispatch(postProductData(product));
-    if (!isLoading && postSuccess) {
-      dispatch(addProduct(product));
+    postProduct(product);
+  };
+
+  useEffect(() => {
+    if (!isLoading && isSuccess) {
       reset();
       ToastSuccess("Product Added");
     }
-    if(error){
-      ToastError(errorMassage);
+    if (isError) {
+      ToastError("Something Problem!");
     }
-  };
+  }, [isLoading, isSuccess, isError, reset]);
 
   return (
     <div className="flex justify-center items-center h-full ">
